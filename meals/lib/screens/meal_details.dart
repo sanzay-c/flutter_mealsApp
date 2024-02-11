@@ -8,11 +8,9 @@ class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({
     super.key,
     required this.meal,
-    // required this.onToggleFavorite,
   });
 
   final Meal meal;
-  // final void Function(Meal meal) onToggleFavorite;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,10 +37,22 @@ class MealDetailsScreen extends ConsumerWidget {
                   ),
                 ),
               );
-              // onToggleFavorite(meal); // using provider instead of this.
             },
-            icon: Icon(
-              isFavorite? Icons.star: Icons.star_border,
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                  turns: Tween<double>(
+                    begin: 0.8,
+                    end: 1,
+                  ).animate(animation),
+                  child: child,
+                );
+              },
+              child: Icon(
+                isFavorite ? Icons.star : Icons.star_border,
+                key: ValueKey(isFavorite),
+              ),
             ),
           ),
         ],
@@ -50,11 +60,14 @@ class MealDetailsScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(
-              meal.imageUrl,
-              width: double.infinity,
-              height: 300,
-              fit: BoxFit.cover,
+            Hero(
+              tag: meal.id,
+              child: Image.network(
+                meal.imageUrl,
+                width: double.infinity,
+                height: 300,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(
               height: 14,
